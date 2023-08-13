@@ -62,7 +62,8 @@ fun HomeScreenUI() {
                 coroutineScope.launch {
                     withContext(Dispatchers.IO) {
                         context.dataStore.edit {
-                            it[SMALL_WIPES_KEY] = smallWipesCount - 1
+                            it[SMALL_WIPES_KEY] = if (smallWipesCount > 0) smallWipesCount - 1
+                            else smallWipesCount
                         }
                     }
                 }
