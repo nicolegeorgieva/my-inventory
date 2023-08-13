@@ -58,16 +58,18 @@ fun HomeScreenUI() {
 
             Spacer(modifier = Modifier.width(8.dp))
 
-            Button(onClick = {
-                coroutineScope.launch {
-                    withContext(Dispatchers.IO) {
-                        context.dataStore.edit {
-                            it[SMALL_WIPES_KEY] = if (smallWipesCount > 0) smallWipesCount - 1
-                            else smallWipesCount
+            Button(
+                onClick = {
+                    coroutineScope.launch {
+                        withContext(Dispatchers.IO) {
+                            context.dataStore.edit {
+                                it[SMALL_WIPES_KEY] = smallWipesCount - 1
+                            }
                         }
                     }
-                }
-            }) {
+                },
+                enabled = smallWipesCount > 0
+            ) {
                 Text(text = "-")
             }
         }
