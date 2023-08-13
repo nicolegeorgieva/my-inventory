@@ -1,5 +1,6 @@
 package com.example.inventory.screen
 
+import android.content.Context
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,18 +16,56 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import com.example.inventory.data.SMALL_WIPES_KEY
 import com.example.inventory.data.dataStore
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+enum class QuantityChange {
+    INCREMENT, DECREMENT
+}
+
+@Composable
+fun readQuantity(key: Preferences.Key<Int>): Int {
+    val context = LocalContext.current
+
+    val count by remember {
+        context.dataStore.data.map {
+            it[key] ?: 0
+        }
+    }.collectAsState(initial = 0)
+
+    return count
+}
+
+fun editQuantity(
+    coroutineScope: CoroutineScope,
+    context: Context,
+    key: Preferences.Key<Int>,
+    operation: QuantityChange
+) {
+    coroutineScope.launch {
+        withContext(Dispatchers.IO) {
+            context.dataStore.edit {
+                it[key] = when (operation) {
+                    QuantityChange.INCREMENT -> (it[key] ?: 0) + 1
+                    QuantityChange.DECREMENT -> (it[key] ?: 0) - 1
+                }
+            }
+        }
+    }
+}
+
 @Composable
 fun HomeScreenUI() {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
+    val smallWipesCount = readQuantity(key = SMALL_WIPES_KEY)
 
     Column {
         Text(text = "My Inventory")
@@ -34,24 +73,17 @@ fun HomeScreenUI() {
         Spacer(modifier = Modifier.height(24.dp))
 
         Row {
-            val smallWipesCount by remember {
-                context.dataStore.data.map {
-                    it[SMALL_WIPES_KEY] ?: 0
-                }
-            }.collectAsState(initial = 0)
-
             Text(text = "Small wipes: $smallWipesCount")
 
             Spacer(modifier = Modifier.weight(1f))
 
             Button(onClick = {
-                coroutineScope.launch {
-                    withContext(Dispatchers.IO) {
-                        context.dataStore.edit {
-                            it[SMALL_WIPES_KEY] = smallWipesCount + 1
-                        }
-                    }
-                }
+                editQuantity(
+                    coroutineScope = coroutineScope,
+                    context = context,
+                    key = SMALL_WIPES_KEY,
+                    operation = QuantityChange.INCREMENT
+                )
             }) {
                 Text(text = "+")
             }
@@ -60,13 +92,12 @@ fun HomeScreenUI() {
 
             Button(
                 onClick = {
-                    coroutineScope.launch {
-                        withContext(Dispatchers.IO) {
-                            context.dataStore.edit {
-                                it[SMALL_WIPES_KEY] = smallWipesCount - 1
-                            }
-                        }
-                    }
+                    editQuantity(
+                        coroutineScope = coroutineScope,
+                        context = context,
+                        key = SMALL_WIPES_KEY,
+                        operation = QuantityChange.DECREMENT
+                    )
                 },
                 enabled = smallWipesCount > 0
             ) {
