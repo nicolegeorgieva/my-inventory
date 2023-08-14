@@ -24,6 +24,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import com.example.inventory.data.BIG_WIPES_KEY
+import com.example.inventory.data.BIG_WIPES_REQUIRED_COUNT
 import com.example.inventory.data.KITCHEN_PAPER_KEY
 import com.example.inventory.data.KITCHEN_PAPER_REQUIRED_COUNT
 import com.example.inventory.data.SMALL_WIPES_REQUIRED_SETS_COUNT
@@ -44,6 +46,7 @@ fun HomeScreenUI() {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val smallWipesCount = readQuantity(key = SMALL_WIPES_SETS_KEY)
+    val bigWipesCount = readQuantity(key = BIG_WIPES_KEY)
     val kitchenPaperCount = readQuantity(key = KITCHEN_PAPER_KEY)
 
     Column(
@@ -75,6 +78,27 @@ fun HomeScreenUI() {
                 enabled = smallWipesCount > 0
             )
         }
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = "Big wipes: $bigWipesCount",
+                color = if (bigWipesCount < BIG_WIPES_REQUIRED_COUNT)
+                    Color.Red else Color.Black
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            OperationButtons(
+                coroutineScope = coroutineScope,
+                context = context,
+                key = BIG_WIPES_KEY,
+                enabled = bigWipesCount > 0
+            )
+        }
+
+        Spacer(modifier = Modifier.height(12.dp))
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
