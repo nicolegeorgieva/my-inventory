@@ -43,8 +43,6 @@ enum class QuantityChange {
 
 @Composable
 fun HomeScreenUI() {
-    val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
     val smallWipesCount = readQuantity(key = SMALL_WIPES_SETS_KEY)
     val bigWipesCount = readQuantity(key = BIG_WIPES_KEY)
     val kitchenPaperCount = readQuantity(key = KITCHEN_PAPER_KEY)
