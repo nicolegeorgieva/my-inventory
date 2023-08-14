@@ -63,7 +63,7 @@ fun HomeScreenUI() {
         Spacer(modifier = Modifier.height(24.dp))
 
         ItemRow(
-            text = "Small wipes sets: ",
+            label = "Small wipes sets",
             itemCount = smallWipesCount,
             requiredCount = SMALL_WIPES_REQUIRED_SETS_COUNT,
             key = SMALL_WIPES_SETS_KEY
@@ -72,7 +72,7 @@ fun HomeScreenUI() {
         Spacer(modifier = Modifier.height(12.dp))
 
         ItemRow(
-            text = "Big wipes: ",
+            label = "Big wipes",
             itemCount = bigWipesCount,
             requiredCount = BIG_WIPES_REQUIRED_COUNT,
             key = BIG_WIPES_KEY
@@ -81,7 +81,7 @@ fun HomeScreenUI() {
         Spacer(modifier = Modifier.height(12.dp))
 
         ItemRow(
-            text = "Kitchen paper: ",
+            label = "Kitchen paper",
             itemCount = kitchenPaperCount,
             requiredCount = KITCHEN_PAPER_REQUIRED_COUNT,
             key = KITCHEN_PAPER_KEY
@@ -160,14 +160,14 @@ fun OperationButtons(
 
 @Composable
 fun ItemRow(
-    text: String,
+    label: String,
     itemCount: Int,
     requiredCount: Int,
     key: Preferences.Key<Int>
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Text(
-            text = text + "$itemCount",
+            text = "$label: $itemCount",
             color = if (itemCount < requiredCount)
                 Color.Red else Color.Black
         )
