@@ -4,7 +4,9 @@ import android.content.Context
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -13,11 +15,15 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import com.example.inventory.data.KITCHEN_PAPER_KEY
 import com.example.inventory.data.SMALL_WIPES_SETS_KEY
 import com.example.inventory.data.dataStore
 import kotlinx.coroutines.CoroutineScope
@@ -35,13 +41,22 @@ fun HomeScreenUI() {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val smallWipesCount = readQuantity(key = SMALL_WIPES_SETS_KEY)
+    val kitchenPaperCount = readQuantity(key = KITCHEN_PAPER_KEY)
 
-    Column {
-        Text(text = "My Inventory")
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(12.dp)
+    ) {
+        Text(
+            text = "My Inventory",
+            fontSize = 32.sp,
+            fontWeight = FontWeight.Bold
+        )
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        Row {
+        Row(verticalAlignment = Alignment.CenterVertically) {
             Text(text = "Small wipes sets: $smallWipesCount")
 
             Spacer(modifier = Modifier.weight(1f))
@@ -49,7 +64,21 @@ fun HomeScreenUI() {
             OperationButtons(
                 coroutineScope = coroutineScope,
                 context = context,
+                key = SMALL_WIPES_SETS_KEY,
                 enabled = smallWipesCount > 0
+            )
+        }
+
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(text = "Kitchen paper: $kitchenPaperCount")
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            OperationButtons(
+                coroutineScope = coroutineScope,
+                context = context,
+                key = KITCHEN_PAPER_KEY,
+                enabled = kitchenPaperCount > 0
             )
         }
     }
@@ -87,15 +116,22 @@ fun editQuantity(
 }
 
 @Composable
-fun OperationButtons(coroutineScope: CoroutineScope, context: Context, enabled: Boolean) {
-    Button(onClick = {
-        editQuantity(
-            coroutineScope = coroutineScope,
-            context = context,
-            key = SMALL_WIPES_SETS_KEY,
-            operation = QuantityChange.INCREMENT
-        )
-    }) {
+fun OperationButtons(
+    coroutineScope: CoroutineScope,
+    context: Context,
+    key: Preferences.Key<Int>,
+    enabled: Boolean
+) {
+    Button(
+        onClick = {
+            editQuantity(
+                coroutineScope = coroutineScope,
+                context = context,
+                key = key,
+                operation = QuantityChange.INCREMENT
+            )
+        }
+    ) {
         Text(text = "+")
     }
 
@@ -106,7 +142,7 @@ fun OperationButtons(coroutineScope: CoroutineScope, context: Context, enabled: 
             editQuantity(
                 coroutineScope = coroutineScope,
                 context = context,
-                key = SMALL_WIPES_SETS_KEY,
+                key = key,
                 operation = QuantityChange.DECREMENT
             )
         },
