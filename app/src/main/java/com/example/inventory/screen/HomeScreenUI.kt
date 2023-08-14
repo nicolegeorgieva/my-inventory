@@ -62,60 +62,30 @@ fun HomeScreenUI() {
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = "Small wipes sets: $smallWipesCount",
-                color = if (smallWipesCount < SMALL_WIPES_REQUIRED_SETS_COUNT)
-                    Color.Red else Color.Black
-            )
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            OperationButtons(
-                coroutineScope = coroutineScope,
-                context = context,
-                key = SMALL_WIPES_SETS_KEY,
-                enabled = smallWipesCount > 0
-            )
-        }
+        ItemRow(
+            text = "Small wipes sets: ",
+            itemCount = smallWipesCount,
+            requiredCount = SMALL_WIPES_REQUIRED_SETS_COUNT,
+            key = SMALL_WIPES_SETS_KEY
+        )
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = "Big wipes: $bigWipesCount",
-                color = if (bigWipesCount < BIG_WIPES_REQUIRED_COUNT)
-                    Color.Red else Color.Black
-            )
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            OperationButtons(
-                coroutineScope = coroutineScope,
-                context = context,
-                key = BIG_WIPES_KEY,
-                enabled = bigWipesCount > 0
-            )
-        }
+        ItemRow(
+            text = "Big wipes: ",
+            itemCount = bigWipesCount,
+            requiredCount = BIG_WIPES_REQUIRED_COUNT,
+            key = BIG_WIPES_KEY
+        )
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = "Kitchen paper: $kitchenPaperCount",
-                color = if (kitchenPaperCount < KITCHEN_PAPER_REQUIRED_COUNT)
-                    Color.Red else Color.Black
-            )
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            OperationButtons(
-                coroutineScope = coroutineScope,
-                context = context,
-                key = KITCHEN_PAPER_KEY,
-                enabled = kitchenPaperCount > 0
-            )
-        }
+        ItemRow(
+            text = "Kitchen paper: ",
+            itemCount = kitchenPaperCount,
+            requiredCount = KITCHEN_PAPER_REQUIRED_COUNT,
+            key = KITCHEN_PAPER_KEY
+        )
     }
 }
 
@@ -152,11 +122,12 @@ fun editQuantity(
 
 @Composable
 fun OperationButtons(
-    coroutineScope: CoroutineScope,
-    context: Context,
     key: Preferences.Key<Int>,
     enabled: Boolean
 ) {
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+
     Button(
         onClick = {
             editQuantity(
@@ -184,5 +155,28 @@ fun OperationButtons(
         enabled = enabled
     ) {
         Text(text = "-")
+    }
+}
+
+@Composable
+fun ItemRow(
+    text: String,
+    itemCount: Int,
+    requiredCount: Int,
+    key: Preferences.Key<Int>
+) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Text(
+            text = text + "$itemCount",
+            color = if (itemCount < requiredCount)
+                Color.Red else Color.Black
+        )
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        OperationButtons(
+            key = key,
+            enabled = itemCount > 0
+        )
     }
 }
