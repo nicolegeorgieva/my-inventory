@@ -5,7 +5,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -19,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.edit
+import com.example.inventory.Screen
 import com.example.inventory.data.NAME_KEY
 import com.example.inventory.data.dataStore
 import kotlinx.coroutines.Dispatchers
@@ -29,7 +32,7 @@ import kotlinx.coroutines.withContext
 @SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen() {
+fun SettingsScreen(navigateTo: (Screen) -> Unit) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
 
@@ -44,6 +47,14 @@ fun SettingsScreen() {
             .fillMaxSize()
             .padding(12.dp)
     ) {
+        Button(onClick = {
+            navigateTo(Screen.Home)
+        }) {
+            Text(text = "<")
+        }
+
+        Spacer(modifier = Modifier.height(12.dp))
+
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(text = "Set your name")
 

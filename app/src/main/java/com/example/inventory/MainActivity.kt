@@ -37,7 +37,9 @@ class MainActivity : ComponentActivity() {
                             currentScreen = it
                         })
 
-                        Screen.Settings -> SettingsScreen()
+                        Screen.Settings -> SettingsScreen(navigateTo = { newScreen ->
+                            currentScreen = newScreen
+                        })
                     }
                 }
             }
