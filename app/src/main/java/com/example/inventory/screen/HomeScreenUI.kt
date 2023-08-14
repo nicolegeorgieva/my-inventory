@@ -17,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -24,6 +25,8 @@ import androidx.compose.ui.unit.sp
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import com.example.inventory.data.KITCHEN_PAPER_KEY
+import com.example.inventory.data.KITCHEN_PAPER_REQUIRED_COUNT
+import com.example.inventory.data.SMALL_WIPES_REQUIRED_SETS_COUNT
 import com.example.inventory.data.SMALL_WIPES_SETS_KEY
 import com.example.inventory.data.dataStore
 import kotlinx.coroutines.CoroutineScope
@@ -57,7 +60,11 @@ fun HomeScreenUI() {
         Spacer(modifier = Modifier.height(24.dp))
 
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(text = "Small wipes sets: $smallWipesCount")
+            Text(
+                text = "Small wipes sets: $smallWipesCount",
+                color = if (smallWipesCount < SMALL_WIPES_REQUIRED_SETS_COUNT)
+                    Color.Red else Color.Black
+            )
 
             Spacer(modifier = Modifier.weight(1f))
 
@@ -70,7 +77,11 @@ fun HomeScreenUI() {
         }
 
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(text = "Kitchen paper: $kitchenPaperCount")
+            Text(
+                text = "Kitchen paper: $kitchenPaperCount",
+                color = if (kitchenPaperCount < KITCHEN_PAPER_REQUIRED_COUNT)
+                    Color.Red else Color.Black
+            )
 
             Spacer(modifier = Modifier.weight(1f))
 
