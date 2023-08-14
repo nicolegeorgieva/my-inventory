@@ -1,6 +1,7 @@
 package com.example.inventory.screen
 
 import android.annotation.SuppressLint
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -41,6 +42,10 @@ fun SettingsScreen(navigateTo: (Screen) -> Unit) {
             it[NAME_KEY] ?: ""
         }
     }.collectAsState(initial = "")
+
+    BackHandler {
+        navigateTo(Screen.Home)
+    }
 
     Column(
         modifier = Modifier
