@@ -28,6 +28,7 @@ import com.example.inventory.data.BIG_WIPES_KEY
 import com.example.inventory.data.BIG_WIPES_REQUIRED_COUNT
 import com.example.inventory.data.KITCHEN_PAPER_KEY
 import com.example.inventory.data.KITCHEN_PAPER_REQUIRED_COUNT
+import com.example.inventory.data.NAME_KEY
 import com.example.inventory.data.SMALL_WIPES_REQUIRED_SETS_COUNT
 import com.example.inventory.data.SMALL_WIPES_SETS_KEY
 import com.example.inventory.data.dataStore
@@ -42,7 +43,15 @@ enum class QuantityChange {
 }
 
 @Composable
-fun HomeScreenUI() {
+fun HomeScreen() {
+    val context = LocalContext.current
+
+    val name by remember {
+        context.dataStore.data.map {
+            it[NAME_KEY] ?: ""
+        }
+    }.collectAsState(initial = "")
+
     val smallWipesCount = readQuantity(key = SMALL_WIPES_SETS_KEY)
     val bigWipesCount = readQuantity(key = BIG_WIPES_KEY)
     val kitchenPaperCount = readQuantity(key = KITCHEN_PAPER_KEY)
@@ -53,7 +62,7 @@ fun HomeScreenUI() {
             .padding(12.dp)
     ) {
         Text(
-            text = "My Inventory",
+            text = "$name's Inventory",
             fontSize = 32.sp,
             fontWeight = FontWeight.Bold
         )
