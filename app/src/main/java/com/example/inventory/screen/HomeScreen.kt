@@ -8,7 +8,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -24,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import com.example.inventory.Screen
 import com.example.inventory.data.BIG_WIPES_KEY
 import com.example.inventory.data.BIG_WIPES_REQUIRED_COUNT
 import com.example.inventory.data.KITCHEN_PAPER_KEY
@@ -43,7 +48,9 @@ enum class QuantityChange {
 }
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    navigateTo: (Screen) -> Unit
+) {
     val context = LocalContext.current
 
     val name by remember {
@@ -61,11 +68,26 @@ fun HomeScreen() {
             .fillMaxSize()
             .padding(12.dp)
     ) {
-        Text(
-            text = "$name's Inventory",
-            fontSize = 32.sp,
-            fontWeight = FontWeight.Bold
-        )
+        Row {
+            Text(
+                text = "$name's Inventory",
+                fontSize = 32.sp,
+                fontWeight = FontWeight.Bold
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            IconButton(
+                onClick = {
+                    navigateTo(Screen.Settings)
+                }
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Menu,
+                    contentDescription = "Settings"
+                )
+            }
+        }
 
         Spacer(modifier = Modifier.height(24.dp))
 
