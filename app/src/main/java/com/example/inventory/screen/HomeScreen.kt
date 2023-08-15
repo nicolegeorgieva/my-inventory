@@ -44,7 +44,6 @@ import com.example.inventory.data.SMALL_WIPES_REQUIRED_SETS_COUNT
 import com.example.inventory.data.SMALL_WIPES_SETS_KEY
 import com.example.inventory.data.dataStore
 import com.example.inventory.request.fetchTodos
-import io.ktor.client.call.receive
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
@@ -155,14 +154,13 @@ fun HomeScreen(
             Button(onClick = {
                 text += "$currentText, "
                 currentText = ""
+
+                coroutineScope.launch(Dispatchers.IO) {
+                    val response = fetchTodos()
+                }
             }) {
                 Text(text = "Save")
             }
-        }
-
-        coroutineScope.launch(Dispatchers.IO) {
-            val response = fetchTodos()
-            val todo = response.receive<String>()
         }
     }
 }
