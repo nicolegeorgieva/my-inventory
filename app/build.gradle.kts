@@ -69,4 +69,7 @@ dependencies {
     debugImplementation(libs.ui.test.manifest)
 
     implementation(libs.androidx.datastore.preferences)
+
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.android)
 }
