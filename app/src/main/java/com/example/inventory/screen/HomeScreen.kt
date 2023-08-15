@@ -1,5 +1,6 @@
 package com.example.inventory.screen
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -42,6 +43,8 @@ import com.example.inventory.data.NAME_KEY
 import com.example.inventory.data.SMALL_WIPES_REQUIRED_SETS_COUNT
 import com.example.inventory.data.SMALL_WIPES_SETS_KEY
 import com.example.inventory.data.dataStore
+import com.example.inventory.request.fetchTodos
+import io.ktor.client.call.receive
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
@@ -52,12 +55,14 @@ enum class QuantityChange {
     INCREMENT, DECREMENT
 }
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     navigateTo: (Screen) -> Unit
 ) {
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
 
     val name by remember {
         context.dataStore.data.map {
@@ -153,6 +158,11 @@ fun HomeScreen(
             }) {
                 Text(text = "Save")
             }
+        }
+
+        coroutineScope.launch(Dispatchers.IO) {
+            val response = fetchTodos()
+            val todo = response.receive<String>()
         }
     }
 }

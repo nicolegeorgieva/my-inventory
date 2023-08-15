@@ -8,7 +8,6 @@ val client = HttpClient {
     expectSuccess = false
 }
 
-// Sample usage
 suspend fun fetchTodos(): HttpResponse {
-    return client.get("https://jsonplaceholder.typicode.com/todos/1")
+    return client.get("http://0.0.0.0:8080")
 }
